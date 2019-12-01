@@ -14,6 +14,7 @@ public class DaoHeartbeatResHandler extends ChannelInboundHandlerAdapter {
         if (message.getHeader().getMessageType() == MessageType.HEART_BEAT_REQ.getValue()) {
             System.out.println("接收到服务端的心跳，响应其请求......");
             Message heartbeatRes = Message.buildHeartbeatRes();
+            ctx.writeAndFlush(heartbeatRes);
         } else {
             ctx.fireChannelRead(msg);
         }
