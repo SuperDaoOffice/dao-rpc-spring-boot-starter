@@ -5,6 +5,7 @@ import com.dao.rpc.server.anno.ServiceProvider;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -12,23 +13,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExportedService implements ApplicationContextAware {
+@Component
+public class InitService implements ApplicationContextAware {
 
     private Map<String, ActionMethod> exportedMethodMap = new HashMap<>(16);
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        loadExportService(applicationContext);
+
+    }
+
+    private void loadExportService(ApplicationContext applicationContext) {
         for (String beanName : applicationContext.getBeanNamesForAnnotation(ServiceExport.class)) {
             Object bean = applicationContext.getBean(beanName);
             Class<?> beanClass = bean.getClass();
-            for (Method method : beanClass.getMethods()) {
+            for (Method method : beanClass.getDeclaredMethods()) {
                 for (Class<?> parentInterface : beanClass.getInterfaces()) {
                     boolean isProviderInterface = parentInterface.isAnnotationPresent(ServiceProvider.class);
                     if (!isProviderInterface) {
                         continue;
                     }
                     String serviceName = parentInterface.getName();
-                    for (Method interfaceMethod : parentInterface.getMethods()) {
+                    for (Method interfaceMethod : parentInterface.getDeclaredMethods()) {
                         if (methodEquals(interfaceMethod, method)) {
                             ActionMethod actionMethod = new ActionMethod(bean, method);
                             List<String> parameterList = new ArrayList<>();
@@ -36,7 +43,7 @@ public class ExportedService implements ApplicationContextAware {
                                 parameterList.add(parameterType.getName());
                             }
                             String parameterName = String.join(";", parameterList);
-                            String url = serviceName + ":" + interfaceMethod.getName() + ":" + parameterName;
+                            String url = serviceName + ":" + interfaceMethod.getName() + "(" + parameterName + ")";
                             exportedMethodMap.put(url,actionMethod);
                         }
                     }
@@ -44,6 +51,7 @@ public class ExportedService implements ApplicationContextAware {
             }
 
         }
+
     }
 
     public boolean methodEquals(Method interfaceMethod, Method method) {
