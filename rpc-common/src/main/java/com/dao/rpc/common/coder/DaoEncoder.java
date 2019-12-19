@@ -19,7 +19,6 @@ import static com.dao.rpc.common.protocol.Constant.UTF_8;
  * @date 2019/11/25 下午 17:29
  * @description
  */
-@ChannelHandler.Sharable
 public class DaoEncoder extends MessageToByteEncoder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(DaoEncoder.class);

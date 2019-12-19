@@ -3,7 +3,6 @@ package com.dao.rpc.register.client.handler;
 import com.dao.rpc.common.coder.DaoDecoder;
 import com.dao.rpc.common.coder.DaoEncoder;
 import com.dao.rpc.common.rpc.RegisterProperties;
-import com.dao.rpc.register.client.config.ClientProperties;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -20,13 +19,7 @@ import javax.annotation.PostConstruct;
 
 public class DaoHeartbeatClient {
 
-    private ClientProperties clientProperties;
-
     private RegisterProperties registerProperties;
-
-    private DaoDecoder daoDecoder;
-
-    private DaoEncoder daoEncoder;
 
     private DaoConnReqHandler connReqHandler;
 
@@ -40,20 +33,17 @@ public class DaoHeartbeatClient {
 
     private DaoClientExceptionHandler clientExceptionHandler;
 
-    public DaoHeartbeatClient(DaoDecoder daoDecoder, DaoEncoder daoEncoder, DaoConnReqHandler reqHandler,
+    public DaoHeartbeatClient( DaoConnReqHandler reqHandler,
                               DaoConnResHandler resHandler, DaoHeartbeatResHandler heartbeatResHandler,
                               DaoAddServerHandler addServerHandler, DaoDeleteServerHandler deleteServerHandler,
-                              DaoClientExceptionHandler exceptionHandler, ClientProperties clientProperties,
+                              DaoClientExceptionHandler exceptionHandler,
                               RegisterProperties registerProperties) {
-        this.daoDecoder = daoDecoder;
-        this.daoEncoder = daoEncoder;
         this.connReqHandler = reqHandler;
         this.connResHandler = resHandler;
         this.heartbeatResHandler = heartbeatResHandler;
         this.addServerHandler = addServerHandler;
         this.deleteServerHandler = deleteServerHandler;
         this.clientExceptionHandler = exceptionHandler;
-        this.clientProperties = clientProperties;
         this.registerProperties = registerProperties;
     }
 
@@ -71,8 +61,8 @@ public class DaoHeartbeatClient {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 2,
                                     4, 0, 0))
-                                    .addLast(daoDecoder)
-                                    .addLast(daoEncoder)
+                                    .addLast(new DaoDecoder())
+                                    .addLast(new DaoEncoder())
                                     .addLast(connReqHandler)
                                     .addLast(connResHandler)
                                     .addLast(heartbeatResHandler)

@@ -3,7 +3,6 @@ package com.dao.rpc.common.coder;
 import com.dao.rpc.common.protocol.Header;
 import com.dao.rpc.common.protocol.Message;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
@@ -18,7 +17,6 @@ import static com.dao.rpc.common.protocol.Constant.UTF_8;
  * @date 2019/11/25 下午 18:10
  * @description
  */
-@ChannelHandler.Sharable
 public class DaoDecoder extends ByteToMessageDecoder {
 
     private ObjectDecoder objectDecoder;

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.dao.rpc.register.client.config.CacheConfig,\
+com.dao.rpc.register.client.config.HandlerConfig,\
+com.dao.rpc.register.client.config.ServiceProxyConfig

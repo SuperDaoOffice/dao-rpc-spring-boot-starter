@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.dao.rpc.register.config.ServerConfig
+
+  

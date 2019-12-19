@@ -20,9 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 public class RegisterServer {
 
-    private DaoDecoder daoDecoder;
-
-    private DaoEncoder daoEncoder;
 
     private ConnResHandler daoConnResHandler;
 
@@ -30,13 +27,15 @@ public class RegisterServer {
 
     private ServerProperties serverProperties;
 
-    public RegisterServer(DaoEncoder daoEncoder, DaoDecoder daoDecoder, ServerProperties serverProperties,
-                          ConnResHandler daoConnResHandler, RegisterExceptionHandler exceptionHandler) {
-        this.daoDecoder = daoDecoder;
-        this.daoEncoder = daoEncoder;
+    private Integer port;
+
+
+    public RegisterServer(ConnResHandler daoConnResHandler, RegisterExceptionHandler exceptionHandler,
+                          ServerProperties serverProperties, Integer port) {
         this.daoConnResHandler = daoConnResHandler;
         this.exceptionHandler = exceptionHandler;
         this.serverProperties = serverProperties;
+        this.port = port;
     }
 
     @PostConstruct
@@ -54,15 +53,15 @@ public class RegisterServer {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 2,
                                     4, 0, 0))
-                                    .addLast(daoDecoder)
-                                    .addLast(daoEncoder)
+                                    .addLast(new DaoDecoder())
+                                    .addLast(new DaoEncoder())
                                     .addLast(daoConnResHandler)
-                                    .addLast(new ClientHeartbeatReqHandler(serverProperties.getTimeout(), TimeUnit.MILLISECONDS))
-                                    .addLast(new ServerHeartbeatHandler(serverProperties.getTimeout(), TimeUnit.MILLISECONDS))
+                                    .addLast(new RpcClientHeartbeatReqHandler(serverProperties.getTimeout(), TimeUnit.MILLISECONDS))
+                                    .addLast(new RpcServerHeartbeatHandler(serverProperties.getTimeout(), TimeUnit.MILLISECONDS))
                                     .addLast(exceptionHandler);
                         }
                     });
-            ChannelFuture future = b.bind(serverProperties.getPort()).sync();
+            ChannelFuture future = b.bind(port).sync();
             future.channel().closeFuture().addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
@@ -71,6 +70,7 @@ public class RegisterServer {
                     workGroup.shutdownGracefully();
                 }
             });
+            System.out.println("启动成功...");
         } catch (Exception e) {
             e.printStackTrace();
         }

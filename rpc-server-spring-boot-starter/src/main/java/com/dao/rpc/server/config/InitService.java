@@ -6,9 +6,9 @@ import com.dao.rpc.common.coder.DaoDecoder;
 import com.dao.rpc.common.coder.DaoEncoder;
 import com.dao.rpc.common.rpc.RegisterProperties;
 import com.dao.rpc.server.handler.HeartbeatResHandler;
-import com.dao.rpc.server.handler.ServerExceptionHandler;
 import com.dao.rpc.server.handler.InvokeMethodHandler;
 import com.dao.rpc.server.handler.RegisterServerHandler;
+import com.dao.rpc.server.handler.ServerExceptionHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -36,21 +36,14 @@ public class InitService implements ApplicationContextAware {
 
     private RegisterProperties registerProperties;
 
-    private DaoEncoder daoEncoder;
-
-    private DaoDecoder daoDecoder;
-
     private HeartbeatResHandler heartbeatResHandler;
 
     private Integer port;
 
     public InitService(RegisterProperties registerProperties, Integer port,
-                       DaoEncoder daoEncoder, DaoDecoder daoDecoder,
                        HeartbeatResHandler heartbeatResHandler) {
         this.registerProperties = registerProperties;
         this.port = port;
-        this.daoEncoder = daoEncoder;
-        this.daoDecoder = daoDecoder;
         this.heartbeatResHandler = heartbeatResHandler;
     }
 
@@ -58,7 +51,7 @@ public class InitService implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         List<String> exportServiceList = loadExportService(applicationContext);
         register(exportServiceList, port);
-        listenConn();
+        listenConn(port);
 
     }
 
@@ -78,10 +71,11 @@ public class InitService implements ApplicationContextAware {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 2,
+                            ch.pipeline()
+                                    .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 2,
                                     4, 0, 0))
-                                    .addLast(daoDecoder)
-                                    .addLast(daoEncoder)
+                                    .addLast(new DaoDecoder())
+                                    .addLast(new DaoEncoder())
                                     .addLast(registerServerHandler)
                                     .addLast(heartbeatResHandler);
                         }
@@ -113,7 +107,7 @@ public class InitService implements ApplicationContextAware {
     /**
      * 监听连接
      */
-    private void listenConn() {
+    private void listenConn(Integer port) {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         NioEventLoopGroup workGroup = new NioEventLoopGroup();
         try {
@@ -135,7 +129,7 @@ public class InitService implements ApplicationContextAware {
 
                         }
                     });
-            ChannelFuture future = b.bind(9000).sync();
+            ChannelFuture future = b.bind(port).sync();
             future.channel().closeFuture().addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
