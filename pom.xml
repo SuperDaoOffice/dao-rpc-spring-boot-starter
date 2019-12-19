@@ -18,7 +18,7 @@
 
     <modules>
         <module>register-server-spring-boot-starter</module>
-        <module>register-client-spring-boot-starter</module>
+        <module>rpc-client-spring-boot-starter</module>
         <module>rpc-common</module>
         <module>rpc-server-spring-boot-starter</module>
     </modules>

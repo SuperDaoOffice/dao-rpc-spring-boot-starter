@@ -9,18 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rpc-server-spring-boot-starter</artifactId>
+    <artifactId>rpc-client-spring-boot-starter</artifactId>
+
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-web</artifactId>-->
-            <!--<version>2.2.1.RELEASE</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.dao.rpc</groupId>
             <artifactId>rpc-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.1-jre</version>
         </dependency>
     </dependencies>
 
