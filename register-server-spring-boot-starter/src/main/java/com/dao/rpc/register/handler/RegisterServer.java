@@ -25,15 +25,19 @@ public class RegisterServer {
 
     private RegisterExceptionHandler exceptionHandler;
 
+    private RegisterServerHandler registerServerHandler;
+
     private ServerProperties serverProperties;
 
     private Integer port;
 
 
     public RegisterServer(ConnResHandler daoConnResHandler, RegisterExceptionHandler exceptionHandler,
+                          RegisterServerHandler registerServerHandler,
                           ServerProperties serverProperties, Integer port) {
         this.daoConnResHandler = daoConnResHandler;
         this.exceptionHandler = exceptionHandler;
+        this.registerServerHandler = registerServerHandler;
         this.serverProperties = serverProperties;
         this.port = port;
     }
@@ -56,6 +60,7 @@ public class RegisterServer {
                                     .addLast(new DaoDecoder())
                                     .addLast(new DaoEncoder())
                                     .addLast(daoConnResHandler)
+                                    .addLast(registerServerHandler)
                                     .addLast(new RpcClientHeartbeatReqHandler(serverProperties.getTimeout(), TimeUnit.MILLISECONDS))
                                     .addLast(new RpcServerHeartbeatHandler(serverProperties.getTimeout(), TimeUnit.MILLISECONDS))
                                     .addLast(exceptionHandler);

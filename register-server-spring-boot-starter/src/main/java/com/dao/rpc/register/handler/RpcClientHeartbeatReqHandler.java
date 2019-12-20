@@ -25,6 +25,8 @@ public class RpcClientHeartbeatReqHandler extends HeartbeatHandler {
                     .scheduleAtFixedRate(new HeartbeatTask(ctx), 5000, 5000, TimeUnit.MILLISECONDS);
         } else if (message.getHeader().getMessageType() == MessageType.HEART_BEAT_RES.getValue()) {
             System.out.println("注册中心收到心跳......");
+            super.channelRead(ctx, msg);
+            return;
         }
         ctx.fireChannelRead(msg);
     }

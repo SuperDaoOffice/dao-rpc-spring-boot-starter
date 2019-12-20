@@ -1,8 +1,9 @@
 package com.dao.rpc.common.rpc;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RegisterServer {
+public class RegisterServer implements Serializable {
 
     private RemoteAddress address;
 

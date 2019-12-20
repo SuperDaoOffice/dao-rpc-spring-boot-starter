@@ -1,6 +1,8 @@
 package com.dao.rpc.common.exception;
 
-public class InvokeExceptionEntity extends ExceptionEntity {
+import java.io.Serializable;
+
+public class InvokeExceptionEntity extends ExceptionEntity implements Serializable {
 
     private String requestId;
 

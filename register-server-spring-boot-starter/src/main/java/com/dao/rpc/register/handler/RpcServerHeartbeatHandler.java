@@ -2,6 +2,7 @@ package com.dao.rpc.register.handler;
 
 import com.dao.rpc.common.protocol.Message;
 import com.dao.rpc.common.protocol.MessageType;
+import com.dao.rpc.common.rpc.RegisterServer;
 import com.dao.rpc.common.rpc.RemoteAddress;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -24,8 +25,12 @@ public class RpcServerHeartbeatHandler extends HeartbeatHandler {
             ctx.pipeline().remove(RpcClientHeartbeatReqHandler.class);
             this.heartbeatTask = ctx.executor()
                     .scheduleAtFixedRate(new HeartbeatTask(ctx), 5000, 5000, TimeUnit.MILLISECONDS);
+
+
         } else if (message.getHeader().getMessageType() == MessageType.HEART_BEAT_RES.getValue()) {
             System.out.println("注册中心收到心跳......");
+            super.channelRead(ctx, msg);
+            return;
         }
         ctx.fireChannelRead(msg);
     }
