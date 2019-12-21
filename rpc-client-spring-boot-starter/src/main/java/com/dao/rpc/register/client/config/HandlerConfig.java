@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class HandlerConfig {
 
 
+
     @Bean
     public DaoConnReqHandler daoConnReqHandler() {
         return new DaoConnReqHandler();
@@ -42,12 +43,13 @@ public class HandlerConfig {
     }
 
     @Bean
-    public DaoHeartbeatClient daoHeartbeatClient(DaoConnReqHandler reqHandler,
-                                                 DaoConnResHandler resHandler, DaoHeartbeatResHandler heartbeatResHandler,
+    public DaoHeartbeatClient daoHeartbeatClient(DaoConnReqHandler reqHandler, DaoConnResHandler resHandler,
+                                                 DaoHeartbeatResHandler heartbeatResHandler,
                                                  DaoAddServerHandler addServerHandler, DaoDeleteServerHandler deleteServerHandler,
-                                                 DaoClientExceptionHandler exceptionHandler, RegisterProperties registerProperties
-    ) {
+                                                 DaoClientExceptionHandler exceptionHandler, RegisterProperties registerProperties) {
         return new DaoHeartbeatClient(reqHandler, resHandler, heartbeatResHandler, addServerHandler,
                 deleteServerHandler, exceptionHandler, registerProperties);
     }
+
+
 }

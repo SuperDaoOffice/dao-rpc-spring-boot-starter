@@ -20,6 +20,7 @@ public class RpcClientHeartbeatReqHandler extends HeartbeatHandler {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
         if (message.getHeader().getMessageType() == MessageType.CONN_REQ.getValue()) {
+            System.out.println("连接进入...");
             ctx.pipeline().remove(RpcServerHeartbeatHandler.class);
             this.heartbeatTask = ctx.executor()
                     .scheduleAtFixedRate(new HeartbeatTask(ctx), 5000, 5000, TimeUnit.MILLISECONDS);

@@ -6,6 +6,7 @@ import com.dao.rpc.common.protocol.Message;
 import com.dao.rpc.common.protocol.MessageType;
 import com.dao.rpc.common.rpc.RemoteAddress;
 import com.dao.rpc.common.rpc.Request;
+import com.dao.rpc.common.util.IDUtils;
 import com.dao.rpc.register.client.entity.RemoteServices;
 import com.dao.rpc.register.client.handler.DaoRemoteCallClient;
 
@@ -35,6 +36,7 @@ public class DaoServiceProxy implements InvocationHandler {
         request.setServiceName(serviceName);
         request.setMethod(methodName);
         request.setArgs(args);
+        request.setRequestId(IDUtils.nextId());
         Message<Request> message = new Message<>();
         Header header = new Header();
         header.setMessageType(MessageType.REQUEST.getValue());

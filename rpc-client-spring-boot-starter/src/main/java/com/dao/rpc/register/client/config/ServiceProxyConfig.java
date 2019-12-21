@@ -1,15 +1,15 @@
 package com.dao.rpc.register.client.config;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 @Configuration
-@EnableConfigurationProperties(ClientProperties.class)
 public class ServiceProxyConfig {
 
     @Bean
-    public LoadServiceProxy loadServiceProxy(ClientProperties clientProperties) {
-        return new LoadServiceProxy(clientProperties.getPackageName());
+    public ServiceBeanDefinitionRegistry serviceBeanDefinitionRegistry(Environment env) {
+        String packageName = env.getProperty("dao.rpc.client.packageName");
+        return new ServiceBeanDefinitionRegistry(packageName);
     }
 }

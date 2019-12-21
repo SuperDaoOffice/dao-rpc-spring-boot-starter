@@ -5,11 +5,13 @@ import com.dao.rpc.common.protocol.MessageType;
 import com.dao.rpc.common.rpc.RegisterServer;
 import com.dao.rpc.common.rpc.RemoteAddress;
 import com.dao.rpc.register.util.RegisterCache;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import static com.dao.rpc.register.util.RegisterCache.notifyAllClientWithAddedServer;
 
+@ChannelHandler.Sharable
 public class RegisterServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
