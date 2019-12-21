@@ -13,42 +13,8 @@ public class HandlerConfig {
 
 
     @Bean
-    public DaoConnReqHandler daoConnReqHandler() {
-        return new DaoConnReqHandler();
-    }
-
-    @Bean
-    public DaoConnResHandler daoConnResHandler() {
-        return new DaoConnResHandler();
-    }
-
-    @Bean
-    public DaoHeartbeatResHandler daoHeartbeatResHandler() {
-        return new DaoHeartbeatResHandler();
-    }
-
-    @Bean
-    public DaoAddServerHandler daoAddServerHandler() {
-        return new DaoAddServerHandler();
-    }
-
-    @Bean
-    public DaoDeleteServerHandler daoDeleteServerHandler() {
-        return new DaoDeleteServerHandler();
-    }
-
-    @Bean
-    public DaoClientExceptionHandler daoClientExceptionHandler() {
-        return new DaoClientExceptionHandler();
-    }
-
-    @Bean
-    public DaoHeartbeatClient daoHeartbeatClient(DaoConnReqHandler reqHandler, DaoConnResHandler resHandler,
-                                                 DaoHeartbeatResHandler heartbeatResHandler,
-                                                 DaoAddServerHandler addServerHandler, DaoDeleteServerHandler deleteServerHandler,
-                                                 DaoClientExceptionHandler exceptionHandler, RegisterProperties registerProperties) {
-        return new DaoHeartbeatClient(reqHandler, resHandler, heartbeatResHandler, addServerHandler,
-                deleteServerHandler, exceptionHandler, registerProperties);
+    public DaoHeartbeatClient daoHeartbeatClient( RegisterProperties registerProperties) {
+        return new DaoHeartbeatClient( registerProperties);
     }
 
 

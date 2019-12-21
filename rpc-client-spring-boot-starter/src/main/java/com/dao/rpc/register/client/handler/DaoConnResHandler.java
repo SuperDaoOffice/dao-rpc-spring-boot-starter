@@ -10,14 +10,23 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 public class DaoConnResHandler extends ChannelInboundHandlerAdapter {
+
+
+    private CountDownLatch latch;
+
+    public DaoConnResHandler(CountDownLatch latch) {
+        this.latch = latch;
+    }
 
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
         if (message.getHeader().getMessageType() == MessageType.CONN_RES.getValue()) {
+            latch.countDown();
             ConcurrentHashMap<String, List<RemoteAddress>> map =
                     (ConcurrentHashMap<String, List<RemoteAddress>>) message.getContent();
             for (Map.Entry<String, List<RemoteAddress>> entry : map.entrySet()) {
