@@ -39,8 +39,6 @@ public class InvokeMethodHandler extends ChannelInboundHandlerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
             ctx.writeAndFlush(buildInvokeMessage(request.getRequestId(), e.getMessage()));
-        } finally {
-            ctx.close();
         }
 
     }

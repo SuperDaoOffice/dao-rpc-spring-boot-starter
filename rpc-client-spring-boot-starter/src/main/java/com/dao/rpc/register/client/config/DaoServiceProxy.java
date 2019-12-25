@@ -7,8 +7,10 @@ import com.dao.rpc.common.protocol.MessageType;
 import com.dao.rpc.common.rpc.RemoteAddress;
 import com.dao.rpc.common.rpc.Request;
 import com.dao.rpc.common.util.IDUtils;
+import com.dao.rpc.register.client.conn.DaoConnection;
+import com.dao.rpc.register.client.conn.DaoConnectionPool;
+import com.dao.rpc.register.client.conn.DaoConnectionPoolFactory;
 import com.dao.rpc.register.client.entity.RemoteServices;
-import com.dao.rpc.register.client.handler.DaoRemoteCallClient;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -19,8 +21,11 @@ public class DaoServiceProxy implements InvocationHandler {
 
     private Class interfaceClass;
 
-    public DaoServiceProxy(Class interfaceClass) {
+    private DaoConnectionPoolFactory poolFactory;
+
+    public DaoServiceProxy(Class interfaceClass, DaoConnectionPoolFactory poolFactory) {
         this.interfaceClass = interfaceClass;
+        this.poolFactory = poolFactory;
     }
 
     @Override
@@ -47,7 +52,8 @@ public class DaoServiceProxy implements InvocationHandler {
         if (remoteAddress == null) {
             throw new DaoException("没有找到远程服务: " + serviceName);
         }
-        DaoRemoteCallClient client = new DaoRemoteCallClient(remoteAddress);
-        return client.remoteCall(message);
+        DaoConnectionPool connectionPool = poolFactory.getConnectionPool(remoteAddress);
+        DaoConnection connection = connectionPool.getConnection();
+        return connection.remoteInvoke(message);
     }
 }
